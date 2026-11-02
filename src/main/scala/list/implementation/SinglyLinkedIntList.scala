@@ -45,10 +45,27 @@ abstract class SinglyLinkedIntList extends IntList:
     case Cons(h, t) if (filterFunc(h)) => Cons(head, this.tail.filter(filterFunc))
     case _ => this.tail.filter(filterFunc)
 
-  override def foldRight(initial: Int)(reduceFunc: (Int, Int) => Int): Int = ???
+  override def foldRight(initial: Int)(reduceFunc: (Int, Int) => Int): Int =
+
+    def helper(l: IntList, previousHead: Int): Int = l match
+      case Empty => reduceFunc(previousHead, initial)
+      case Cons(h, t) => reduceFunc(previousHead, helper(t, h))
+
+    this match
+      case Empty => initial
+      case Cons(h,t) => helper(t, head)
+
 
   /* Do not use a fold-operator for the implementation!*/
-  override def reduceRight(reduceFunc: (Int, Int) => Int): Int = ???
+  override def reduceRight(reduceFunc: (Int, Int) => Int): Int =
+
+    def helper(l: IntList, previousHead: Int): Int = l match
+      case Empty => previousHead
+      case Cons(h, t) => reduceFunc(previousHead, helper(t, h))
+
+    this match
+      case Empty => throw new IllegalArgumentException("Empty List")
+      case Cons(h, t) => helper(t, head)
 
   override def foldLeft(initial: Int)(reduceFunc: (Int, Int) => Int): Int =
 
@@ -61,7 +78,16 @@ abstract class SinglyLinkedIntList extends IntList:
 
 
   /* Do not use a fold-operator for the implementation!*/
-  override def reduceLeft(reduceFunc: (Int, Int) => Int): Int = ???
+  override def reduceLeft(reduceFunc: (Int, Int) => Int): Int =
+
+    @tailrec
+    def helper(previousResult: Int, l: IntList): Int = l match
+      case Empty => previousResult
+      case Cons(h, t) => helper(reduceFunc(previousResult, h), l.tail)
+
+    this match
+      case Empty => throw new IllegalArgumentException("Empty List")
+      case _ => helper(head, this.tail)
 
 
   override def forAll(predicateFunc: Int => Boolean): Boolean = this match
