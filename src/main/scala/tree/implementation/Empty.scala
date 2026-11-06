@@ -10,10 +10,10 @@ case object Empty extends BinaryTree :
 
   override def isEmpty = true
 
-  override def contains(elem: Int): Boolean = ???
+  override def contains(elem: Int): Boolean = false
 
-  override def size: Int = ???
+  override def size: Int = 0
 
-  override def height: Int = ???
+  override def height: Int = 0
 
 
